@@ -2,10 +2,12 @@ import { Button } from '@/components/ui/button'
 import {Card, CardHeader, CardTitle, CardDescription, CardContent}from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { LoaderCircle } from 'lucide-react';
 import { login } from '@/http/api'
 import { useMutation } from '@tanstack/react-query'
-import { useEffect, useRef, type FormEvent } from 'react'
+import { useRef, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { cn } from '@/lib/utils';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -31,11 +33,6 @@ function LoginPage() {
 
     mutation.mutate({email,password});
   }
-
-  useEffect(()=>{
-    console.log("login page open")
-  },[])
-
 
   return (
     <section className='flex justify-center items-center h-screen'>
@@ -71,8 +68,10 @@ function LoginPage() {
                 </div>
                 <Input ref={passwordRef} id="password" type="password" required />
               </div>
-              <Button type='submit' className="w-full">
-                Login
+              {mutation.isError && <span className=' text-red-500 text-sm'>{mutation.error.message}</span>}
+              <Button type='submit' className="w-full" disabled={mutation.isPending}>
+                <LoaderCircle className={mutation.isPending ? 'animate-spin' : " hidden"}/>
+                <span>Login</span>
               </Button>
               <Button variant="outline" className="w-full">
                 Login with Google

@@ -5,6 +5,7 @@ import { Label } from "@radix-ui/react-label"
 import { Link } from "react-router-dom"
 
 function RegisterPage() {
+
   return (
     <section className='flex justify-center items-center h-screen'>
     <Card className="mx-auto max-w-md space-y-2 w-1/4">

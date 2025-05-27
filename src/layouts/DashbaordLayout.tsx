@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Link, Outlet } from "react-router-dom"
+import { Link, Navigate, Outlet } from "react-router-dom"
 import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserRound } from "lucide-react"
+import useTokenStore from "@/store"
 
 
 function DashbaordLayout() {
+  const token = useTokenStore((state)=> state.token);
+  if(token === ''){
+    return <Navigate to={'/auth/login'} replace/>;
+  }
   return (
     <div className="flex min-h-screen w-full">
       

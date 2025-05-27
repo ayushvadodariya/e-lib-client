@@ -10,10 +10,17 @@ import useTokenStore from "@/store"
 
 
 function DashbaordLayout() {
-  const token = useTokenStore((state)=> state.token);
+
+  const {token, setToken}= useTokenStore((state)=> state);
+
   if(token === ''){
     return <Navigate to={'/auth/login'} replace/>;
   }
+
+  const handleLogout = () =>{
+    setToken("");
+  }
+
   return (
     <div className="flex min-h-screen w-full">
       
@@ -144,7 +151,7 @@ function DashbaordLayout() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem className=" focus:bg-red-500 focus:text-white" onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

@@ -7,17 +7,19 @@ import { login } from '@/http/api'
 import { useMutation } from '@tanstack/react-query'
 import { useRef, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import useTokenStore from '@/store';
 
 function LoginPage() {
   const navigate = useNavigate();
+  const setToken = useTokenStore((state)=> state.setToken);
   
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef= useRef<HTMLInputElement>(null);
 
   const mutation = useMutation({
     mutationFn: login,
-    onSuccess: () => {
-      console.log("successful login");
+    onSuccess: (response) => {
+      setToken(response.data.accessToken);
       navigate('/dashboard/home');
     },
   });
@@ -26,7 +28,6 @@ function LoginPage() {
     e.preventDefault();
     const email = emailRef.current?.value;
     const password= passwordRef.current?.value;
-    console.log('data', {email, password});
 
     if(!email || !password) return alert('Please enter email and password');
 

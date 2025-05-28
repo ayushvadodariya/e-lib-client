@@ -1,6 +1,21 @@
 import { Button } from "@/components/ui/button"
+import useBreadcrumbStore, {type BreadcrumbItemType} from "@/store/breadcrumbStore"
+import { useEffect } from "react"
+
 
 function HomePage() {
+  const { setItem }= useBreadcrumbStore((state)=>state);
+
+  useEffect(()=>{
+    const breadcrumbItem:[BreadcrumbItemType] = [
+      {
+      label: 'Home',
+      path: '/dashboard/home'
+      }
+    ]
+    setItem(breadcrumbItem);
+  },[setItem]);
+
   return (
     <>
       <div className="flex flex-1 items-center justify-center rounded-1g border border-dashed shadow-sm h-full min-h-[calc(100vh-4rem)"

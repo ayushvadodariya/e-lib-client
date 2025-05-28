@@ -1,3 +1,4 @@
+import React from "react"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
@@ -6,12 +7,15 @@ import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Link, Navigate, Outlet } from "react-router-dom"
 import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserRound } from "lucide-react"
-import useTokenStore from "@/store"
+import useTokenStore from "@/store/tokenStore"
+import useBreadcrumbStore, { type BreadcrumbItemType } from "@/store/breadcrumbStore"
+import { useEffect } from "react"
 
 
 function DashbaordLayout() {
 
-  const {token, setToken}= useTokenStore((state)=> state);
+  const {token, setToken} = useTokenStore((state)=> state);
+  const { items } = useBreadcrumbStore((state) => state);
 
   if(token === ''){
     return <Navigate to={'/auth/login'} replace/>;
@@ -118,17 +122,22 @@ function DashbaordLayout() {
           </Sheet>
           <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/dashboard/home" >
-                    Home
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Overview</BreadcrumbPage>
-              </BreadcrumbItem>
+              {items && items.map((item: BreadcrumbItemType, key: number)=>(
+                <React.Fragment key={key}>
+                  <BreadcrumbItem>
+                    {key == items.length -1 ? (
+                      <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink asChild>
+                        <Link to={item.path} >
+                          {item.label}
+                        </Link>
+                      </BreadcrumbLink>
+                    )}
+                    {key < items.length - 1 && <BreadcrumbSeparator />}
+                </BreadcrumbItem>
+                </React.Fragment>
+              ))}
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">

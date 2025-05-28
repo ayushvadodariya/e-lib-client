@@ -1,4 +1,4 @@
-import useTokenStore from "@/store"
+import useTokenStore from "@/store/tokenStore";
 import { Navigate, Outlet } from "react-router-dom"
 
 function AuthLayout() {

@@ -7,7 +7,7 @@ import { login } from '@/http/api'
 import { useMutation } from '@tanstack/react-query'
 import { useRef, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import useTokenStore from '@/store';
+import useTokenStore from '@/store/tokenStore';
 
 function LoginPage() {
   const navigate = useNavigate();

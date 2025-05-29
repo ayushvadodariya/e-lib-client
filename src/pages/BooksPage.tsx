@@ -1,6 +1,7 @@
 import { getBooks } from "@/http/api"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast, Toaster } from "sonner"
+import { CirclePlus } from 'lucide-react';
 
 import {
   Table,
@@ -18,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import { MoreHorizontal, LoaderCircle } from "lucide-react"
 import { useEffect } from "react"
 import useBreadcrumbStore, { type BreadcrumbItemType} from "@/store/breadcrumbStore"
+import { Link } from "react-router-dom";
 
 function BooksPage() {
 
@@ -65,9 +67,17 @@ function BooksPage() {
         <Toaster position="top-right" richColors/>
       </div>
       <Card className="h-full">
-        <CardHeader>
-          <CardTitle>Books</CardTitle>
-          <CardDescription>Manage your books</CardDescription>
+        <CardHeader className="flex flex-row justify-between">
+          <div>
+            <CardTitle>Books</CardTitle>
+            <CardDescription>Manage your books</CardDescription>
+          </div>
+          <Link to='/dashboard/books/create'>
+            <Button>
+              <CirclePlus />
+              <span>Add book</span>
+            </Button>
+          </Link>
         </CardHeader>
         <CardContent>
           {

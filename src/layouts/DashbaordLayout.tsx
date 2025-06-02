@@ -5,13 +5,16 @@ import { Button } from "@/components/ui/button"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Link, Navigate, Outlet } from "react-router-dom"
+import { Link, Navigate, Outlet, useMatch } from "react-router-dom"
 import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserRound } from "lucide-react"
 import useTokenStore from "@/store/tokenStore"
 import useBreadcrumbStore, { type BreadcrumbItemType } from "@/store/breadcrumbStore"
 
 
 function DashbaordLayout() {
+
+  const homeMatch = useMatch('/dashboard/home');
+  const booksMatch= useMatch('/dashboard/books');
 
   const {token, setToken} = useTokenStore((state)=> state);
   const { items } = useBreadcrumbStore((state) => state);
@@ -41,7 +44,9 @@ function DashbaordLayout() {
               <TooltipTrigger asChild>
                 <Link
                   to="/dashboard/home"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                    homeMatch? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+
                 >
                   <House className="h-5 w-5" />
                   <span className="sr-only">Home</span>
@@ -53,11 +58,13 @@ function DashbaordLayout() {
               <TooltipTrigger asChild>
                 <Link
                   to="/dashboard/books"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                    booksMatch? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
                 >
                   <BookOpenText className="h-5 w-5" />
                   <span className="sr-only">Books</span>
                 </Link>
+
               </TooltipTrigger>
               <TooltipContent side="right">Books</TooltipContent>
             </Tooltip>

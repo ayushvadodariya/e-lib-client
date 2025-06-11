@@ -1,4 +1,5 @@
 import useTokenStore from "@/store/tokenStore";
+import type { formDataType } from "@/types";
 import axios from "axios";
 
 const api = axios.create({
@@ -35,3 +36,11 @@ export const createBook = async (data: FormData)=> api.post('/api/books', data, 
     'Content-Type': 'multipart/form-data'
   }
 });
+
+export const updateBook = async ( bookId: string, data: FormData) => api.patch(`/api/books/${bookId}`, data, {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});
+
+export const deleteBook = async (bookId: string) => api.delete(`/api/books/${bookId}`);

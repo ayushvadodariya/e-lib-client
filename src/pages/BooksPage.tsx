@@ -1,7 +1,7 @@
-import { getBooks } from "@/http/api"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { deleteBook, getBooks, updateBook } from "@/http/api"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast, Toaster } from "sonner"
-import { CirclePlus } from 'lucide-react';
+import { CirclePlus, PencilIcon, TrashIcon } from 'lucide-react';
 
 import {
   Table,
@@ -13,19 +13,104 @@ import {
 } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import type { Book } from "@/types"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
+import { type Book } from "@/types"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, LoaderCircle } from "lucide-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import useBreadcrumbStore, { type BreadcrumbItemType} from "@/store/breadcrumbStore"
 import { Link } from "react-router-dom";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from 'zod';
+import{zodResolver } from "@hookform/resolvers/zod";
+
+const editFormSchema = z.object({
+  title: z.string().min(2, "Title must be at least 2 characters."),
+  genre: z.string().min(2, "Genre must be at least 2 characters."),
+  description: z.string().min(2, "Description must be at least 2 characters."),
+  coverImage: z.instanceof(FileList).optional(),
+  file: z.instanceof(FileList).optional(),
+});
+
+type EditFormDataType = z.infer<typeof editFormSchema>;
 
 function BooksPage() {
+  
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
+
+  const form = useForm<EditFormDataType>({
+      resolver: zodResolver(editFormSchema)
+  });
+
+  useEffect(()=>{
+    if(editingBook) {
+      form.reset({
+        title: editingBook.title,
+        genre: editingBook.genre,
+        description: editingBook.description
+      });
+    }
+  },[editingBook, form]);
+
+  const coverImageRef = form.register('coverImage');
+  const fileRef = form.register('file');
+
+  const updateMutation = useMutation({
+    mutationFn: (data: EditFormDataType )=>{
+      if(!editingBook) throw new Error("No book selected for editing");
+
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('genre', data.genre);
+      formData.append('description', data.description);
+
+      if (data.coverImage && data.coverImage.length > 0) {
+        formData.append('coverImage', data.coverImage[0]);
+      }
+
+      if (data.file && data.file.length > 0) {
+        formData.append('file', data.file[0]);
+      }
+
+      return updateBook(editingBook._id, formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['books']});
+      toast.success("Book updates successfully!");
+      setEditingBook(null);
+    },
+    onError: (error) => {
+      toast.error("Failed to update book",{
+        description: error instanceof Error ? error.message : "An unknown error occurred"
+      });
+    }
+  });
+
+  const onEditSubmit = (values: EditFormDataType) => {
+    updateMutation.mutate(values);
+  }
+
+  const deleteMutation = useMutation({
+    mutationFn: (bookId: string) => {
+      return deleteBook(bookId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['books']});
+      toast.success("Book deleted successfully!");
+    },
+    onError: (error) => {
+      toast.error("Failed to delete book", {
+        description: error instanceof Error ? error.message : "An unknown error occurred"
+      });
+    }
+  });
 
   const queryClient = useQueryClient();
-  const { setItem } = useBreadcrumbStore((state)=>state);
-
+  
   const {data, error, isLoading, isError} = useQuery<Book[]>({
     queryKey: ['books'],
     queryFn: async () => {
@@ -35,21 +120,7 @@ function BooksPage() {
     staleTime: 10000,
   });
 
-  
   useEffect(()=>{
-
-    const breadCrumbItems:BreadcrumbItemType[] = [
-      {
-        label: 'Home',
-        path: '/dashboard/home'
-      },
-      {
-        label: 'Books',
-        path: '/dashboard/home/books'
-      }
-    ]
-    setItem(breadCrumbItems);
-
     if(isError && error) {
       toast.error('Failed to load books', {
         description: error.message,
@@ -60,6 +131,23 @@ function BooksPage() {
       })
     }
   },[isError, error ,queryClient]);
+  
+  const { setItem } = useBreadcrumbStore((state)=>state);
+
+  useEffect(()=>{
+    const breadCrumbItems:BreadcrumbItemType[] = [
+      {
+        label: 'Home',
+        path: '/dashboard/home'
+      },
+      {
+        label: 'Books',
+        path: '/dashboard/home/books'
+      }
+    ];
+    setItem(breadCrumbItems);
+  },[setItem]);
+  
 
   return (
     <>
@@ -112,7 +200,11 @@ function BooksPage() {
                       <Badge variant="outline">{book.genre}</Badge>
                     </TableCell>
                     <TableCell>{book.author.name}</TableCell>
-                    <TableCell>{book.createdAt}</TableCell>
+                    <TableCell>{new Date(book.createdAt).toLocaleDateString('en-US',{
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -125,12 +217,36 @@ function BooksPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>delete</DropdownMenuItem>
+                          <DropdownMenuItem 
+                          className="cursor-pointer flex items-center gap-2"
+                          onClick={()=>{
+                            setEditingBook(book);
+                          }}>
+                            <PencilIcon className="h-4 w-4" />
+                            <span>Edit</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="cursor-pointer flex items-center gap-2 text-destructive focus:text-destructive"
+                            onClick={() => {
+                              // Add your delete logic here
+                              toast.warning(`Delete ${book.title}?`, {
+                                description: "This action cannot be undone.",
+                                action: {
+                                  label: "Delete",
+                                  onClick: () => {
+                                    deleteMutation.mutate(book._id);
+                                  }
+                                }
+                              });
+                            }}>
+                            <TrashIcon className="h-4 w-4" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
                   </TableRow>
+
                 ))):(
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
@@ -141,6 +257,131 @@ function BooksPage() {
               </TableBody>
             </Table>
           }
+          <Dialog open={!!editingBook} onOpenChange={(open)=>!open && setEditingBook(null)}>
+            <Form {...form}>
+              <form>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Edit Book</DialogTitle>
+                    <DialogDescription>
+                      Make changes to your Book here. Click save when you&apos;re
+                      done.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <FormField 
+                    control={form.control}
+                    name="title"
+                    render={({ field })=>(
+                      <FormItem>
+                        <FormLabel>Title</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="name"
+                            type="text"
+                            className="w-full"
+                            {...field}
+                          >
+                          </Input>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  >
+                  </FormField>
+                  <FormField
+                    control={form.control}
+                    name="genre"
+                    render={({ field })=>(
+                      <FormItem>
+                        <FormLabel>Genre</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="genre"
+                            type="text"
+                            className="w-full"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  >
+                  </FormField>
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field })=>(
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id="description"
+                            className="w-full h-36 resize-none"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  >
+                  </FormField>
+                  <FormField
+                    control={form.control}
+                    name="coverImage"
+                    render={()=>(
+                      <FormItem>
+                        <FormLabel>Cover Image</FormLabel>
+                        <FormControl>
+
+                          <Input 
+                            id="file" 
+                            type="file" 
+                            {...coverImageRef}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  >
+                  </FormField>
+                  <FormField
+                    control={form.control}
+                    name="file"
+                    render={()=>(
+                      <FormItem>
+                        <FormLabel>File</FormLabel>
+                        <FormControl>
+                          <Input 
+                            id="file" 
+                            type="file" 
+                            {...fileRef}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  >
+                  </FormField>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button 
+                      type="submit" 
+                      disabled={updateMutation.isPending}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        form.handleSubmit(onEditSubmit)();
+                      }}
+                    >
+                      {updateMutation.isPending && <LoaderCircle className="animate-spin" />}
+                      <span>Save Changes</span>
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </form>
+            </Form>
+          </Dialog>
         </CardContent>
       </Card>
     </>

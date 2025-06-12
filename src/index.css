@@ -55,7 +55,7 @@
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.9 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
@@ -74,6 +74,14 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Your Modern Neutral theme colors */
+  --background: oklch(0.965 0.01 254); /* Light Gray #F3F4F6 */
+  --foreground: oklch(0.32 0.03 255);  /* Slate Gray #1E293B */
+  --primary: oklch(0.544 0.22 265);    /* Indigo #4F46E5 */
+
+  --tooltip-background: oklch(0.32 0.03 255); /* Slate Gray */
+  --tooltip-foreground: oklch(0.985 0 0); /* White text */
 }
 
 .dark {
@@ -108,6 +116,23 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Dark version of your Modern Neutral theme */
+  --background: oklch(0.145 0.02 265); /* Dark background with slight indigo tint #121528 */
+  --foreground: oklch(0.92 0.01 254);  /* Light gray text for contrast #E8EAED */
+  --primary: oklch(0.60 0.18 265);     /* Brighter indigo that stands out in dark mode #6366F1 */
+  
+  /* Update card and other elements to match */
+  --card: oklch(0.18 0.02 265);        /* Slightly lighter than background for contrast #1B1E35 */
+  --card-foreground: oklch(0.92 0.01 254); /* Same as foreground */
+  
+  /* Update accent to match theme */
+  --accent: oklch(0.65 0.15 227);      /* Slightly muted sky blue for dark mode #5BA5F5 */
+  --accent-foreground: oklch(0.12 0.01 265); /* Very dark color for text on accent #11131D */
+  
+  /* Update tooltip */
+  --tooltip-background: oklch(0.32 0.03 255); /* Slate Gray */
+  --tooltip-foreground: oklch(0.985 0 0); /* White text */
 }
 
 @layer base {

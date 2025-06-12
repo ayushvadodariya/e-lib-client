@@ -154,7 +154,7 @@ function BooksPage() {
       <div className=" flex absolute">
         <Toaster position="top-right" richColors/>
       </div>
-      <Card className="h-full">
+      <Card className="h-[calc(100vh-100px)]">
         <CardHeader className="flex flex-row justify-between">
           <div>
             <CardTitle>Books</CardTitle>
@@ -167,19 +167,20 @@ function BooksPage() {
             </Button>
           </Link>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-auto h-[calc(100vh-10rem)]">
           {
             isLoading ? (<div className="flex justify-center items-center py-12">
               <LoaderCircle className="animate-spin h-10 w-10 text-primary" />
             </div>):
             <Table>
-              <TableHeader>
+              <TableHeader className="sticky top-0 z-10 bg-background border-b">
                 <TableRow>
                   <TableHead className="w-[100px]"></TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Genre</TableHead>
                   <TableHead>Author</TableHead>
                   <TableHead>Created At</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

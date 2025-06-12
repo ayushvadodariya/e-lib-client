@@ -9,12 +9,14 @@ import { Link, Navigate, Outlet, useMatch } from "react-router-dom"
 import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserRound } from "lucide-react"
 import useTokenStore from "@/store/tokenStore"
 import useBreadcrumbStore, { type BreadcrumbItemType } from "@/store/breadcrumbStore"
+import { NavItem } from "@/components/ui/nav-item"
 
 
 function DashbaordLayout() {
 
   const homeMatch = useMatch('/dashboard/home');
   const booksMatch= useMatch('/dashboard/books');
+  const settingsMatch= useMatch('/dashboard/setting');
 
   const {token, setToken} = useTokenStore((state)=> state);
   const { items } = useBreadcrumbStore((state) => state);
@@ -30,7 +32,7 @@ function DashbaordLayout() {
   return (
     <div className="flex min-h-screen w-full">
       
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <TooltipProvider>
             <Link
@@ -40,34 +42,18 @@ function DashbaordLayout() {
               <Package2Icon className="h-4 w-4 transition-all group-hover:scale-110" />
               <div className="sr-only">Book store</div>
             </Link>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to="/dashboard/home"
-                  className={`flex h-9 w-9 items-center justify-center rounded-lg ${
-                    homeMatch? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
-
-                >
-                  <House className="h-5 w-5" />
-                  <span className="sr-only">Home</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">Home</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to="/dashboard/books"
-                  className={`flex h-9 w-9 items-center justify-center rounded-lg ${
-                    booksMatch? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
-                >
-                  <BookOpenText className="h-5 w-5" />
-                  <span className="sr-only">Books</span>
-                </Link>
-
-              </TooltipTrigger>
-              <TooltipContent side="right">Books</TooltipContent>
-            </Tooltip>
+            <NavItem 
+              to="/dashboard/home"
+              icon={House}
+              label="Home"
+              isActive={!!homeMatch}
+            />
+            <NavItem 
+              to="/dashboard/books"
+              icon={BookOpenText}
+              label="Books"
+              isActive={!!booksMatch}
+            />
           </TooltipProvider>
         </nav>
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
@@ -105,24 +91,27 @@ function DashbaordLayout() {
                   <Package2Icon className="h-5 w-5 transition-all group-hover:scale-110" />
                   <span className="sr-only">Book store</span>
                 </Link>
-                <Link to="/dashboard/home" className="flex items-center gap-4 px-2.5 text-foreground" >
-                  <House className="h-5 w-5" />
-                  Home
-                </Link>
-                <Link
+                <NavItem 
+                  to="/dashboard/home"
+                  icon={House}
+                  label="Home"
+                  isActive={!!homeMatch}
+                  variant="mobile"
+                />
+                <NavItem 
                   to="/dashboard/books"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <BookOpenText className="h-5 w-5" />
-                  Books
-                </Link>
-                <Link
+                  icon={BookOpenText}
+                  label="Books"
+                  isActive={!!booksMatch}
+                  variant="mobile"
+                />
+                <NavItem 
                   to="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <SettingsIcon className="h-5 w-5" />
-                  Settings
-                </Link>
+                  icon={SettingsIcon}
+                  label="Settings"
+                  isActive={!!settingsMatch}
+                  variant="mobile"
+                />
               </nav>
             </SheetContent>
           </Sheet>

@@ -1,16 +1,9 @@
 import { deleteBook, getBooks, updateBook } from "@/http/api"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast, Toaster } from "sonner"
-import { CirclePlus, PencilIcon, TrashIcon } from 'lucide-react';
+import { CirclePlus, Eye, PencilIcon, TrashIcon } from 'lucide-react';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { type Book } from "@/types"
@@ -19,7 +12,7 @@ import { MoreHorizontal, LoaderCircle } from "lucide-react"
 import { useEffect, useState } from "react"
 import useBreadcrumbStore, { type BreadcrumbItemType} from "@/store/breadcrumbStore"
 import { Link } from "react-router-dom";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +20,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { z } from 'zod';
 import{zodResolver } from "@hookform/resolvers/zod";
+import { BookDetailDialog } from "@/components/ui/bookdetail-dialog";
+import { format, parseISO } from "date-fns";
 
 const editFormSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters."),
@@ -39,7 +34,8 @@ const editFormSchema = z.object({
 type EditFormDataType = z.infer<typeof editFormSchema>;
 
 function BooksPage() {
-  
+
+  const [viewingBook, setViewingBook] = useState<Book | null>(null);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   const form = useForm<EditFormDataType>({
@@ -117,7 +113,8 @@ function BooksPage() {
       const response = await getBooks();
       return response.data;
     },
-    staleTime: 10000,
+    staleTime: 1000 * 60 * 30, // 5 minutes
+    gcTime: 60 * 60 * 1000     // 60 minutes
   });
 
   useEffect(()=>{
@@ -201,11 +198,9 @@ function BooksPage() {
                       <Badge variant="outline">{book.genre}</Badge>
                     </TableCell>
                     <TableCell>{book.author.name}</TableCell>
-                    <TableCell>{new Date(book.createdAt).toLocaleDateString('en-US',{
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}</TableCell>
+                      <TableCell>
+                        {format(parseISO(book.createdAt), "MMM d, yyyy")}
+                      </TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -243,6 +238,14 @@ function BooksPage() {
                             <TrashIcon className="h-4 w-4" />
                             <span>Delete</span>
                           </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="cursor-pointer flex items-center gap-2"
+                              onClick={() => {
+                                setViewingBook(book);
+                              }}>
+                              <Eye className="h-4 w-4" />
+                              <span>View Details</span>
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -383,6 +386,11 @@ function BooksPage() {
               </form>
             </Form>
           </Dialog>
+          <BookDetailDialog 
+            book={viewingBook} 
+            open={!!viewingBook} 
+            onOpenChange={(open) => !open && setViewingBook(null)} 
+          />
         </CardContent>
       </Card>
     </>

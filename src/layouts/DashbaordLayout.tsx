@@ -10,23 +10,32 @@ import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserR
 import useTokenStore from "@/store/tokenStore"
 import useBreadcrumbStore, { type BreadcrumbItemType } from "@/store/breadcrumbStore"
 import { NavItem } from "@/components/ui/nav-item"
-
+import { useQueryClient } from '@tanstack/react-query';
+import { useSyncUser } from "@/hooks/useSyncUser"
+import { useUserStore } from "@/store/userStore"
 
 function DashbaordLayout() {
+
+  useSyncUser();
 
   const homeMatch = useMatch('/dashboard/home');
   const booksMatch= useMatch('/dashboard/books');
   const settingsMatch= useMatch('/dashboard/setting');
 
   const {token, setToken} = useTokenStore((state)=> state);
+  const { clearUser } = useUserStore((state) => state);
   const { items } = useBreadcrumbStore((state) => state);
 
-  if(token === ''){
-    return <Navigate to={'/auth/login'} replace/>;
-  }
-
+  const queryClient = useQueryClient();
+  
   const handleLogout = () =>{
     setToken("");
+    clearUser();
+    queryClient.clear();
+  }
+  
+  if(token === ''){
+    return <Navigate to={'/auth/login'} replace/>;
   }
 
   return (

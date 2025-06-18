@@ -20,6 +20,9 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export const userDetail = async () => 
+  api.get('/api/users');
+
 export const login = async (data: {email:string, password:string}) => 
   api.post('/api/users/login', data);
 

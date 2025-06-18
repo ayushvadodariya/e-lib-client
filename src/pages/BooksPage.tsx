@@ -111,7 +111,7 @@ function BooksPage() {
     queryKey: ['books'],
     queryFn: async () => {
       const response = await getBooks();
-      return response.data;
+      return response.data as Book[];
     },
     staleTime: 1000 * 60 * 30, // 5 minutes
     gcTime: 60 * 60 * 1000     // 60 minutes

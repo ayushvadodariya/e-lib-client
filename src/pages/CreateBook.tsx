@@ -11,14 +11,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBook } from "@/http/api";
 import { LoaderCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { formSchema, type formDataType } from "@/types";
+import { createBookFormSchema, type CreateBookFormType } from "@/types/forms";
 
 function CreateBook() {
 
   const navigate = useNavigate();
 
-  const form = useForm<formDataType>({
-    resolver: zodResolver(formSchema) 
+  const form = useForm<CreateBookFormType>({
+    resolver: zodResolver(createBookFormSchema) 
   });
 
   const coverImageRef = form.register('coverImage');
@@ -35,7 +35,7 @@ function CreateBook() {
   });
 
 
-  const onSubmit = (values:formDataType)=>{
+  const onSubmit = (values:CreateBookFormType)=>{
     const formdata = new FormData()
     formdata.append('title', values.title);
     formdata.append('genre', values.genre);

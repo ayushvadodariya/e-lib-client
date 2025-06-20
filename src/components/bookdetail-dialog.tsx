@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { Book } from "@/types";
+import type { Book } from "@/types/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

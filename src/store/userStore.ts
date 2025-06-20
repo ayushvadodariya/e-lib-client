@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
-import type { User } from "@/types";
+import type { User } from "@/types/types";
 
 interface UserState {
   user: User | null;

@@ -1,7 +1,7 @@
 import { userDetail } from "@/http/api";
 import useTokenStore from "@/store/tokenStore";
 import { useUserStore } from "@/store/userStore";
-import type { User } from "@/types";
+import type { User } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 

@@ -2,11 +2,10 @@ import { deleteBook, getBooks, updateBook } from "@/http/api"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast, Toaster } from "sonner"
 import { CirclePlus, Eye, PencilIcon, TrashIcon } from 'lucide-react';
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { type Book, type User } from "@/types"
+import { type Book, type User } from "@/types/types"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, LoaderCircle } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -18,21 +17,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { z } from 'zod';
-import{zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { BookDetailDialog } from "@/components/bookdetail-dialog";
 import { format, parseISO } from "date-fns";
 import { useUserStore } from "@/store/userStore";
-
-const editFormSchema = z.object({
-  title: z.string().min(2, "Title must be at least 2 characters."),
-  genre: z.string().min(2, "Genre must be at least 2 characters."),
-  description: z.string().min(2, "Description must be at least 2 characters."),
-  coverImage: z.instanceof(FileList).optional(),
-  file: z.instanceof(FileList).optional(),
-});
-
-type EditFormDataType = z.infer<typeof editFormSchema>;
+import { type EditFormDataType, editBookFromSchem} from '@/types/forms';
 
 function BooksPage() {
 
@@ -42,7 +31,7 @@ function BooksPage() {
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   const form = useForm<EditFormDataType>({
-      resolver: zodResolver(editFormSchema)
+      resolver: zodResolver(editBookFromSchem)
   });
 
   useEffect(()=>{
@@ -151,7 +140,6 @@ function BooksPage() {
 
   return (
     <>
-    <p>{JSON.stringify(user)}</p>
       <div className=" flex absolute">
         <Toaster position="top-right" richColors/>
       </div>

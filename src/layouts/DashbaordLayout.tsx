@@ -9,7 +9,7 @@ import { Link, Navigate, Outlet, useMatch } from "react-router-dom"
 import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserRound } from "lucide-react"
 import useTokenStore from "@/store/tokenStore"
 import useBreadcrumbStore, { type BreadcrumbItemType } from "@/store/breadcrumbStore"
-import { NavItem } from "@/components/ui/nav-item"
+import { NavItem } from "@/components/nav-item"
 import { useQueryClient } from '@tanstack/react-query';
 import { useSyncUser } from "@/hooks/useSyncUser"
 import { useUserStore } from "@/store/userStore"

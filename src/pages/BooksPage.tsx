@@ -6,7 +6,7 @@ import { CirclePlus, Eye, PencilIcon, TrashIcon } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { type Book } from "@/types"
+import { type Book, type User } from "@/types"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, LoaderCircle } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -20,8 +20,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { z } from 'zod';
 import{zodResolver } from "@hookform/resolvers/zod";
-import { BookDetailDialog } from "@/components/ui/bookdetail-dialog";
+import { BookDetailDialog } from "@/components/bookdetail-dialog";
 import { format, parseISO } from "date-fns";
+import { useUserStore } from "@/store/userStore";
 
 const editFormSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters."),
@@ -34,6 +35,8 @@ const editFormSchema = z.object({
 type EditFormDataType = z.infer<typeof editFormSchema>;
 
 function BooksPage() {
+
+  const user = useUserStore(state => state.user) as User;
 
   const [viewingBook, setViewingBook] = useState<Book | null>(null);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
@@ -108,7 +111,7 @@ function BooksPage() {
   const queryClient = useQueryClient();
   
   const {data, error, isLoading, isError} = useQuery<Book[]>({
-    queryKey: ['books'],
+    queryKey: ['books', user.id],
     queryFn: async () => {
       const response = await getBooks();
       return response.data as Book[];
@@ -148,6 +151,7 @@ function BooksPage() {
 
   return (
     <>
+    <p>{JSON.stringify(user)}</p>
       <div className=" flex absolute">
         <Toaster position="top-right" richColors/>
       </div>

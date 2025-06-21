@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import type { Book } from "@/types/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -86,25 +85,25 @@ export function BookDetailDialog({ book, open, onOpenChange }: BookDetailDialogP
               {book.description}
             </p>
           </div>
-            </div>
-          <DialogFooter>
-            <Button 
-              onClick={handleDownload}
-              className="gap-2"
-              disabled={isDownloading}
-            >
-              {isDownloading ? 
-              <LoaderCircle className="animate-spin"/>
-               : <Download className="h-4 w-4" /> }
-              Download PDF
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => onOpenChange(false)}
-            >
-              Close
-            </Button>
-          </DialogFooter>
+        </div>
+        <DialogFooter>
+          <Button 
+            onClick={handleDownload}
+            className="gap-2"
+            disabled={isDownloading}
+          >
+            {isDownloading ? 
+            <LoaderCircle className="animate-spin"/>
+              : <Download className="h-4 w-4" /> }
+            Download PDF
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)}
+          >
+            Close
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

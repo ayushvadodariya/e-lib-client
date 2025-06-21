@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BookDetailDialog } from "@/components/bookdetail-dialog";
+import { BookDetailDialog } from "@/components/book-detail-dialog";
 import { format, parseISO } from "date-fns";
 import { type EditFormDataType, editBookFromSchem} from '@/types/forms';
 import { useDeleteBook } from "@/hooks/useDeleteBook";

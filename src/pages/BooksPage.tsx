@@ -1,11 +1,10 @@
-import { deleteBook, getBooks, updateBook } from "@/http/api"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { toast, Toaster } from "sonner"
 import { CirclePlus, Eye, PencilIcon, TrashIcon } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { type Book, type User } from "@/types/types"
+import { type Book } from "@/types/types"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, LoaderCircle } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -20,12 +19,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookDetailDialog } from "@/components/bookdetail-dialog";
 import { format, parseISO } from "date-fns";
-import { useUserStore } from "@/store/userStore";
 import { type EditFormDataType, editBookFromSchem} from '@/types/forms';
+import { useDeleteBook } from "@/hooks/useDeleteBook";
+import { useEditBook } from "@/hooks/useEditBook";
+import { useBooks } from "@/hooks/useBooks";
 
 function BooksPage() {
-
-  const user = useUserStore(state => state.user) as User;
 
   const [viewingBook, setViewingBook] = useState<Book | null>(null);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
@@ -47,67 +46,23 @@ function BooksPage() {
   const coverImageRef = form.register('coverImage');
   const fileRef = form.register('file');
 
-  const updateMutation = useMutation({
-    mutationFn: (data: EditFormDataType )=>{
-      if(!editingBook) throw new Error("No book selected for editing");
-
-      const formData = new FormData();
-      formData.append('title', data.title);
-      formData.append('genre', data.genre);
-      formData.append('description', data.description);
-
-      if (data.coverImage && data.coverImage.length > 0) {
-        formData.append('coverImage', data.coverImage[0]);
-      }
-
-      if (data.file && data.file.length > 0) {
-        formData.append('file', data.file[0]);
-      }
-
-      return updateBook(editingBook._id, formData);
-    },
+  const editBookMutation = useEditBook({
+    editingBook,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['books']});
-      toast.success("Book updates successfully!");
       setEditingBook(null);
-    },
-    onError: (error) => {
-      toast.error("Failed to update book",{
-        description: error instanceof Error ? error.message : "An unknown error occurred"
-      });
+      form.reset();
     }
-  });
+  })
 
   const onEditSubmit = (values: EditFormDataType) => {
-    updateMutation.mutate(values);
+    editBookMutation.mutate(values);
   }
 
-  const deleteMutation = useMutation({
-    mutationFn: (bookId: string) => {
-      return deleteBook(bookId);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['books']});
-      toast.success("Book deleted successfully!");
-    },
-    onError: (error) => {
-      toast.error("Failed to delete book", {
-        description: error instanceof Error ? error.message : "An unknown error occurred"
-      });
-    }
-  });
+  const deleteBookMutation = useDeleteBook();
 
   const queryClient = useQueryClient();
-  
-  const {data, error, isLoading, isError} = useQuery<Book[]>({
-    queryKey: ['books', user.id],
-    queryFn: async () => {
-      const response = await getBooks();
-      return response.data as Book[];
-    },
-    staleTime: 1000 * 60 * 30, // 5 minutes
-    gcTime: 60 * 60 * 1000     // 60 minutes
-  });
+
+  const {books, error, isLoading, isError} = useBooks();
 
   useEffect(()=>{
     if(isError && error) {
@@ -173,8 +128,8 @@ function BooksPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data && data.length >0 ?(
-                  data?.map((book: Book, key: number)=>(
+                {books && books.length >0 ?(
+                  books?.map((book: Book, key: number)=>(
                   <TableRow key={key}>
                     <TableCell>
                       <img
@@ -222,7 +177,7 @@ function BooksPage() {
                                 action: {
                                   label: "Delete",
                                   onClick: () => {
-                                    deleteMutation.mutate(book._id);
+                                    deleteBookMutation.mutate(book._id);
                                   }
                                 }
                               });
@@ -364,13 +319,13 @@ function BooksPage() {
                     </DialogClose>
                     <Button 
                       type="submit" 
-                      disabled={updateMutation.isPending}
+                      disabled={editBookMutation.isPending}
                       onClick={(e) => {
                         e.preventDefault();
                         form.handleSubmit(onEditSubmit)();
                       }}
                     >
-                      {updateMutation.isPending && <LoaderCircle className="animate-spin" />}
+                      {editBookMutation.isPending && <LoaderCircle className="animate-spin" />}
                       <span>Save Changes</span>
                     </Button>
                   </DialogFooter>

@@ -7,12 +7,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBook } from "@/http/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createBookFormSchema, type CreateBookFormType } from "@/types/forms";
 import { ROUTES } from "@/config/routes";
+import useCreateBook from "@/hooks/useCreateBook";
 
 function CreateBook() {
 
@@ -27,12 +27,11 @@ function CreateBook() {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: createBook,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['books'] });
-      navigate('/dashboard/books');
-    }
+  const createBookMutation = useCreateBook({
+   onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['books']});
+    navigate(ROUTES.APP.BOOKS);
+   }
   });
 
 
@@ -44,7 +43,7 @@ function CreateBook() {
     formdata.append('coverImage', values.coverImage[0]);
     formdata.append('file', values.file[0]);
 
-    mutation.mutate(formdata);
+    createBookMutation.mutate(formdata);
   };
 
   const { setItem } = useBreadcrumbStore((state) => state);
@@ -84,9 +83,9 @@ function CreateBook() {
                 <span>cancel</span>
               </Button>
             </Link>
-            <Button type="submit" disabled={mutation.isPending}>
+            <Button type="submit" disabled={createBookMutation.isPending}>
               {
-                mutation.isPending && 
+                createBookMutation.isPending && 
                 <LoaderCircle className="animate-spin" />
               }
               <span>Submit</span>

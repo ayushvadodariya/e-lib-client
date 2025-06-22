@@ -49,9 +49,10 @@ function BooksPage() {
 
   const editBookMutation = useEditBook({
     editingBook,
-    onSuccess: () => {
+    onSuccess: (editedBook) => {
       setEditingBook(null);
       form.reset();
+      console.log(JSON.stringify(editedBook));
     }
   })
 

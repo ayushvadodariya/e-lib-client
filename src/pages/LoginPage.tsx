@@ -3,24 +3,16 @@ import {Card, CardHeader, CardTitle, CardDescription, CardContent}from '@/compon
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LoaderCircle } from 'lucide-react';
-import { login } from '@/http/api'
-import { useMutation } from '@tanstack/react-query'
 import { useRef, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import useTokenStore from '@/store/tokenStore';
+import useLogin from '@/hooks/useLogin';
 
 function LoginPage() {
-  const setToken = useTokenStore((state)=> state.setToken);
-  
+
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef= useRef<HTMLInputElement>(null);
 
-  const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: (response) => {
-      setToken(response.data.accessToken);
-    },
-  });
+  const loginMutation = useLogin();
 
   const handleLoginSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,7 +21,7 @@ function LoginPage() {
 
     if(!email || !password) return alert('Please enter email and password');
 
-    mutation.mutate({email,password});
+    loginMutation.mutate({email,password});
   }
 
   return (
@@ -66,9 +58,9 @@ function LoginPage() {
                 </div>
                 <Input ref={passwordRef} id="password" type="password" required />
               </div>
-              {mutation.isError && <span className=' text-red-500 text-sm'>{mutation.error.message}</span>}
-              <Button type='submit' className="w-full" disabled={mutation.isPending}>
-                <LoaderCircle className={mutation.isPending ? 'animate-spin' : " hidden"}/>
+              {loginMutation.isError && <span className=' text-red-500 text-sm'>{loginMutation.error.message}</span>}
+              <Button type='submit' className="w-full" disabled={loginMutation.isPending}>
+                <LoaderCircle className={loginMutation.isPending ? 'animate-spin' : " hidden"}/>
                 <span>Login</span>
               </Button>
               <Button variant="outline" className="w-full">

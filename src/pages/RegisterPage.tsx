@@ -1,29 +1,19 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { register } from "@/http/api"
-import useTokenStore from "@/store/tokenStore"
+import useRegister from "@/hooks/useRegister"
 import { Label } from "@radix-ui/react-label"
-import { useMutation } from "@tanstack/react-query"
 import { LoaderCircle } from "lucide-react"
 import { useRef, type FormEvent } from "react"
 import { Link } from "react-router-dom"
 
 function RegisterPage() {
 
-  const setToken = useTokenStore((state)=> state.setToken);
-
-  
   const nameRef= useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef= useRef<HTMLInputElement>(null);
 
-  const mutation = useMutation({
-    mutationFn: register,
-    onSuccess: (response) => {
-      setToken(response.data.accessToken);
-    },
-  });
+  const registerMutation = useRegister();
 
   const handleRegisterSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +23,7 @@ function RegisterPage() {
 
     if(!name || !email || !password) return alert('Please enter email and password');
 
-    mutation.mutate({name, email, password});
+    registerMutation.mutate({name, email, password});
   }
 
 
@@ -59,9 +49,9 @@ function RegisterPage() {
             <Label htmlFor="password">Password</Label>
             <Input ref={passwordRef} id="password" type="password" required />
           </div>
-          {mutation.isError && <span className=' text-red-500 text-sm'>{mutation.error.message}</span>}
-          <Button type="submit" className="w-full" disabled={mutation.isPending}>
-            <LoaderCircle className={mutation.isPending ? 'animate-spin' : " hidden"}/>
+          {registerMutation.isError && <span className=' text-red-500 text-sm'>{registerMutation.error.message}</span>}
+          <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+            <LoaderCircle className={registerMutation.isPending ? 'animate-spin' : " hidden"}/>
             <span>Create an account</span>
           </Button>
           <div className="mt-4 text-center text-sm">

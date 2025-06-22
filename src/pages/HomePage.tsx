@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { ROUTES } from "@/config/routes";
 import useBreadcrumbStore, {type BreadcrumbItemType} from "@/store/breadcrumbStore"
 import { useEffect } from "react"
 
@@ -10,7 +11,7 @@ function HomePage() {
     const breadcrumbItem:[BreadcrumbItemType] = [
       {
       label: 'Home',
-      path: '/dashboard/home'
+      path: `${ROUTES.APP.HOME}`
       }
     ]
     setItem(breadcrumbItem);

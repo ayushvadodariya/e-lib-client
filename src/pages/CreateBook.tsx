@@ -12,6 +12,7 @@ import { createBook } from "@/http/api";
 import { LoaderCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createBookFormSchema, type CreateBookFormType } from "@/types/forms";
+import { ROUTES } from "@/config/routes";
 
 function CreateBook() {
 
@@ -52,15 +53,15 @@ function CreateBook() {
     const breadCrumbItems:BreadcrumbItemType[] = [
       {
         label:'Home',
-        path: '/dashboard/home'
+        path: `${ROUTES.APP.HOME}` 
       },
       {
         label:'Books',
-        path: '/dashboard/books'
+        path: `${ROUTES.APP.BOOKS}`
       },
       {
         label:'Create',
-        path: '/dashboard/books/create'
+        path:`${ROUTES.APP.BOOKS_CREATE}`
       }
     ]
     setItem(breadCrumbItems);
@@ -78,7 +79,7 @@ function CreateBook() {
               </CardDescription>
             </div>
             <div className="flex gap-2">
-            <Link to="/dashboard/books">
+            <Link to={ROUTES.APP.BOOKS}>
               <Button variant="outline">
                 <span>cancel</span>
               </Button>

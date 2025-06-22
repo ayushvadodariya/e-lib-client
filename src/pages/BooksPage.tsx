@@ -23,6 +23,7 @@ import { type EditFormDataType, editBookFromSchem} from '@/types/forms';
 import { useDeleteBook } from "@/hooks/useDeleteBook";
 import { useEditBook } from "@/hooks/useEditBook";
 import { useBooks } from "@/hooks/useBooks";
+import { ROUTES } from "@/config/routes";
 
 function BooksPage() {
 
@@ -82,11 +83,11 @@ function BooksPage() {
     const breadCrumbItems:BreadcrumbItemType[] = [
       {
         label: 'Home',
-        path: '/dashboard/home'
+        path: `${ROUTES.APP.HOME}`
       },
       {
         label: 'Books',
-        path: '/dashboard/home/books'
+        path: `${ROUTES.APP.BOOKS}`
       }
     ];
     setItem(breadCrumbItems);
@@ -104,7 +105,7 @@ function BooksPage() {
             <CardTitle>Books</CardTitle>
             <CardDescription>Manage your books</CardDescription>
           </div>
-          <Link to='/dashboard/books/create'>
+          <Link to={ROUTES.APP.BOOKS_CREATE}>
             <Button>
               <CirclePlus />
               <span>Add book</span>

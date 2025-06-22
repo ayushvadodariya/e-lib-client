@@ -10,17 +10,18 @@ import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserR
 import useTokenStore from "@/store/tokenStore"
 import useBreadcrumbStore, { type BreadcrumbItemType } from "@/store/breadcrumbStore"
 import { NavItem } from "@/components/nav-item"
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query'
 import { useSyncUser } from "@/hooks/useSyncUser"
 import { useUserStore } from "@/store/userStore"
+import { ROUTES } from '@/config/routes'
 
 function DashbaordLayout() {
 
   useSyncUser();
 
-  const homeMatch = useMatch('/dashboard/home');
-  const booksMatch= useMatch('/dashboard/books');
-  const settingsMatch= useMatch('/dashboard/setting');
+  const homeMatch = useMatch(ROUTES.APP.HOME);
+  const booksMatch= useMatch(ROUTES.APP.BOOKS);
+  const settingsMatch= useMatch(ROUTES.APP.SETTINGS);
 
   const {token, setToken} = useTokenStore((state)=> state);
   const { clearUser } = useUserStore((state) => state);
@@ -35,7 +36,7 @@ function DashbaordLayout() {
   }
   
   if(token === ''){
-    return <Navigate to={'/auth/login'} replace/>;
+    return <Navigate to={ROUTES.AUTH.LOGIN} replace/>;
   }
 
   return (
@@ -45,20 +46,20 @@ function DashbaordLayout() {
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <TooltipProvider>
             <Link
-              to="#"
+              to={ROUTES.ROOT}
               className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
             >
               <Package2Icon className="h-4 w-4 transition-all group-hover:scale-110" />
               <div className="sr-only">Book store</div>
             </Link>
             <NavItem 
-              to="/dashboard/home"
+              to={ROUTES.APP.HOME}
               icon={House}
               label="Home"
               isActive={!!homeMatch}
             />
             <NavItem 
-              to="/dashboard/books"
+              to={ROUTES.APP.BOOKS}
               icon={BookOpenText}
               label="Books"
               isActive={!!booksMatch}
@@ -70,7 +71,7 @@ function DashbaordLayout() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="#"
+                  to='#'
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <SettingsIcon className="h-5 w-5" />
@@ -94,21 +95,21 @@ function DashbaordLayout() {
             <SheetContent side="left" className="sm:max-w-xs">
               <nav className="grid gap-6 text-lg font-medium">
                 <Link
-                  to="/dashboard/home"
+                  to={ROUTES.APP.HOME}
                   className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
                   <Package2Icon className="h-5 w-5 transition-all group-hover:scale-110" />
                   <span className="sr-only">Book store</span>
                 </Link>
                 <NavItem 
-                  to="/dashboard/home"
+                  to={ROUTES.APP.HOME}
                   icon={House}
                   label="Home"
                   isActive={!!homeMatch}
                   variant="mobile"
                 />
                 <NavItem 
-                  to="/dashboard/books"
+                  to={ROUTES.APP.BOOKS}
                   icon={BookOpenText}
                   label="Books"
                   isActive={!!booksMatch}

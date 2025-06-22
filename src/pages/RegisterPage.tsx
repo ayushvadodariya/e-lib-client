@@ -7,13 +7,12 @@ import { Label } from "@radix-ui/react-label"
 import { useMutation } from "@tanstack/react-query"
 import { LoaderCircle } from "lucide-react"
 import { useRef, type FormEvent } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 function RegisterPage() {
 
   const setToken = useTokenStore((state)=> state.setToken);
 
-  const navigate = useNavigate();
   
   const nameRef= useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -23,7 +22,6 @@ function RegisterPage() {
     mutationFn: register,
     onSuccess: (response) => {
       setToken(response.data.accessToken);
-      navigate('/dashboard/home');
     },
   });
 

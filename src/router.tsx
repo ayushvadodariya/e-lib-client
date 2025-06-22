@@ -1,50 +1,46 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "@/pages/LoginPage";
 import HomePage from "@/pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
-import DashbaordLayout from "./layouts/DashbaordLayout";
 import BooksPage from "./pages/BooksPage";
-import AuthLayout from "./layouts/AuthLayout";
 import CreateBook from "./pages/CreateBook";
+import DashbaordLayout from "./layouts/AppLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import { ROUTES } from "./config/routes";
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Navigate to='/dashboard/home' />
-  },
-  {
-    path: "dashboard",
+    path: `${ROUTES.ROOT}`,
     element: <DashbaordLayout />,
     children : [
       {
-        path: 'home',
+        path: '',
         element: <HomePage />
       },
       {
-        path: 'books',
+        path: `${ROUTES.APP.BOOKS}`,
         element: <BooksPage />
       },
       {
-        path: 'books/create',
+        path: `${ROUTES.APP.BOOKS_CREATE}`,
         element: <CreateBook />
       }
     ]
   },
   {
-    path: '/auth',
+    path: `${ROUTES.AUTH.BASE}`,
     element: <AuthLayout />,
     children: [
       {
-        path: "login",
+        path: `${ROUTES.AUTH.LOGIN}`,
         element: <LoginPage /> 
       },
       {
-        path: "register",
+        path: `${ROUTES.AUTH.REGISTER}`,
         element: <RegisterPage /> 
       }   
     ]
   }
-  
 ]);
 
 export default router;

@@ -8,7 +8,6 @@ import { type Book } from "@/types/types"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, LoaderCircle } from "lucide-react"
 import { useEffect, useState } from "react"
-import useBreadcrumbStore, { type BreadcrumbItemType} from "@/store/breadcrumbStore"
 import { Link } from "react-router-dom";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -78,23 +77,6 @@ function BooksPage() {
     }
   },[isError, error ,queryClient]);
   
-  const { setItem } = useBreadcrumbStore((state)=>state);
-
-  useEffect(()=>{
-    const breadCrumbItems:BreadcrumbItemType[] = [
-      {
-        label: 'Home',
-        path: `${ROUTES.APP.HOME}`
-      },
-      {
-        label: 'Books',
-        path: `${ROUTES.APP.BOOKS}`
-      }
-    ];
-    setItem(breadCrumbItems);
-  },[setItem]);
-  
-
   return (
     <>
       <div className=" flex absolute">

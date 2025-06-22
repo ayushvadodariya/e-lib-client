@@ -1,21 +1,6 @@
 import { Button } from "@/components/ui/button"
-import { ROUTES } from "@/config/routes";
-import useBreadcrumbStore, {type BreadcrumbItemType} from "@/store/breadcrumbStore"
-import { useEffect } from "react"
-
 
 function HomePage() {
-  const { setItem }= useBreadcrumbStore((state)=>state);
-
-  useEffect(()=>{
-    const breadcrumbItem:[BreadcrumbItemType] = [
-      {
-      label: 'Home',
-      path: `${ROUTES.APP.HOME}`
-      }
-    ]
-    setItem(breadcrumbItem);
-  },[setItem]);
 
   return (
     <>

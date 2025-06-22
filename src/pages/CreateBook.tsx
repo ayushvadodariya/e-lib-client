@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import useBreadcrumbStore, { type BreadcrumbItemType } from "@/store/breadcrumbStore";
-import { useEffect } from "react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from "@/components/ui/textarea";
@@ -45,26 +43,6 @@ function CreateBook() {
 
     createBookMutation.mutate(formdata);
   };
-
-  const { setItem } = useBreadcrumbStore((state) => state);
-
-  useEffect(()=>{
-    const breadCrumbItems:BreadcrumbItemType[] = [
-      {
-        label:'Home',
-        path: `${ROUTES.APP.HOME}` 
-      },
-      {
-        label:'Books',
-        path: `${ROUTES.APP.BOOKS}`
-      },
-      {
-        label:'Create',
-        path:`${ROUTES.APP.BOOKS_CREATE}`
-      }
-    ]
-    setItem(breadCrumbItems);
-  },[ setItem ]);
 
   return (
     <Form {...form}>

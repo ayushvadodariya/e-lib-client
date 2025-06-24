@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { toast, Toaster } from "sonner"
+import { toast } from "sonner"
 import { CirclePlus, Eye, PencilIcon, TrashIcon } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -79,9 +79,6 @@ function BooksPage() {
   
   return (
     <>
-      <div className=" flex absolute">
-        <Toaster position="top-right" richColors/>
-      </div>
       <Card className="h-[calc(100vh-100px)]">
         <CardHeader className="flex flex-row justify-between">
           <div>

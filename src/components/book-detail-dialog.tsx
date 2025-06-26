@@ -12,6 +12,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Download, LoaderCircle } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import useBookBlob from "@/hooks/useBookBlob";
+import { toast } from "sonner";
 
 interface BookDetailDialogProps {
   book: Book | null;
@@ -23,27 +25,60 @@ export function BookDetailDialog({ book, open, onOpenChange }: BookDetailDialogP
 
   
   const [isDownloading, setIsDownloading] = useState(false);
+  const {
+    data: blobData,
+    isLoading: blobLoading,
+    error: blobError,
+    refetch: refetchBlob
+  } = useBookBlob(book?.file || null);
 
   const handleDownload = async() => {
-    setIsDownloading(true);
-    const response = await fetch(book!.file);
-    if (!response.ok) {
-      throw new Error(`Download failed with status: ${response.status}`);
-    }
-    const blob = await response.blob();
+    try{
+      setIsDownloading(true);
 
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${book?.title.replace(/[^\w\s]/gi, '_').replace(/\s+/g,'_')}.pdf`;
-    document.body.appendChild(link);
-    link.click();
+      if(!blobData?.blobUrl){
+        if(blobError) {
+          toast.error('Failed to load book data', {
+            description: blobError.message || 'Could not prepare the book for download'
+          });
+          return;
+        }
+        if(blobLoading) {
+          toast.info('Please wait', {
+            description: 'Book is still loading...'
+          });
+          return;
+        }
+        
+        await refetchBlob();
+        if(!blobData?.blobUrl){
+          throw new Error('Failed to load book data');
+        }
+      }
 
-    setTimeout(() => {
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      const url = blobData?.blobUrl;
+      const fileName = `${book?.title.replace(/[^\w\s]/gi, '_').replace(/\s+/g,'_')}.pdf`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+  
+      setTimeout(() => {
+        document.body.removeChild(link);
+        toast.success('Download started', {
+          description: `${book?.title} is being downloaded`
+        });
+      }, 500);
+
+
+    } catch(error){
+      toast.error('Downolad failed',{
+        description: error instanceof Error ? error.message : 'Failed to downlod the book'
+      });
+    } finally {
       setIsDownloading(false);
-    }, 100);
+    }
   }
   
   if (!book) return null;

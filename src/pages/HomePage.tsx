@@ -1,20 +1,42 @@
-import { Button } from "@/components/ui/button"
+import BookCard from "@/components/book-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ROUTES } from "@/config/routes";
+import { useBooks } from "@/hooks/useBooks";
+import type { Book } from "@/types/types";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
 
+  const { books, isLoading } = useBooks();
+  const navigate = useNavigate();
+
+  const handleBookClick = (book: Book) => {
+    navigate(`${ROUTES.APP.READ}?b=${book._id}`);
+  }
+
   return (
-    <>
-      <div className="flex flex-1 items-center justify-center rounded-1g border border-dashed shadow-sm h-full min-h-[calc(100vh-4rem)"
-      x-chunk = "dashboard-02-chunk-1">
-        <div className="flex flex-col items-center gap-1 text-center">
-        <h3 className="text-2xl font-bold tracking-tight"> You have no books</h3>
-        <p className="text-sm text-muted-foreground">
-          You can start selling as soon as you add a book.
-        </p>
-        <Button className="mt-4">Add Book</Button>
-        </div>
+    <div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+        {books?.map((book) => (
+          <BookCard key={book._id} book={book} onClick={() => handleBookClick(book)}/>
+        ))}
       </div>
-    </>
+
+      {/* Loading skeletons */}
+      { isLoading && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 mt-6">
+          {Array.from({ length: 12 }).map((_, index) => (
+            <div key={index} className="space-y-3">
+              <Skeleton className="h-[240px] w-full rounded-lg" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-3 w-3/4" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 

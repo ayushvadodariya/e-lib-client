@@ -44,11 +44,11 @@ export default function ReadBook() {
     );
   }
 
-  if (!bookId) {
+  if (!bookId || !book) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-85px)]">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">No Book Selected</h1>
+          <h1 className="text-2xl font-bold mb-2">No Book Found</h1>
           <p className="text-muted-foreground mb-4">Please select a book to read.</p>
           <Button onClick={() => navigate('/')}>Go to Home</Button>
         </div>
@@ -102,7 +102,7 @@ export default function ReadBook() {
 
               <div>
                 <h3 className="text-lg font-semibold">Description</h3>
-                <p className="text-sm text-muted-foreground">{book?.description}</p>
+                <p className="text-sm text-muted-foreground text-justify">{book?.description}</p>
               </div>
             </div>
           </div>

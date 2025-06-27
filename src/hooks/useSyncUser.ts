@@ -9,7 +9,7 @@ export function useSyncUser() {
   const token = useTokenStore(state => state.token);
   const setUser = useUserStore(state => state.setUser);
 
-  const { data: user, isSuccess } = useQuery<User>({
+  const { data: user, isSuccess, isLoading, error } = useQuery<User>({
     queryKey: ['user', token],
     queryFn: async () => {
       const res = await userDetail();
@@ -24,4 +24,10 @@ export function useSyncUser() {
   useEffect(()=>{
     if (isSuccess && user) setUser(user);
   }, [ isSuccess,  user, setUser]);
+
+  return {
+    user,
+    isLoading,
+    error
+  };
 }

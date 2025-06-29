@@ -1,9 +1,12 @@
-import { z } from 'zod';
-
 export interface User {
   id: string,
-  name?: string,
-  email?: string
+  name: string,
+  username: string;
+  email: string,
+  bio?: string;
+  profilePhoto?: string,
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface Author {

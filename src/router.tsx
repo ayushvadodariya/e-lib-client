@@ -8,6 +8,7 @@ import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import { ROUTES } from "./config/routes";
 import ReadBook from "./pages/ReadBook";
+import ProfilePage from "./pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: `${ROUTES.APP.READ}`,
         element: <ReadBook />
+      },
+      {
+        path: `${ROUTES.APP.PROFILE}`,
+        element: <ProfilePage />
       }
     ]
   },

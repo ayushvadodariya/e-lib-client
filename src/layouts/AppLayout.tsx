@@ -3,7 +3,7 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Link, Navigate, Outlet, useMatch } from "react-router-dom"
+import { Link, Navigate, Outlet, useMatch, useNavigate } from "react-router-dom"
 import { MenuIcon, Package2Icon,  SettingsIcon , House, BookOpenText,CircleUserRound } from "lucide-react"
 import useTokenStore from "@/store/tokenStore"
 import { NavItem } from "@/components/nav-item"
@@ -17,6 +17,7 @@ function DashbaordLayout() {
 
   useSyncUser();
 
+  const navigate = useNavigate();
   const homeMatch = useMatch(ROUTES.APP.HOME);
   const booksMatch= useMatch(ROUTES.APP.BOOKS);
   const settingsMatch= useMatch(ROUTES.APP.SETTINGS);
@@ -30,6 +31,10 @@ function DashbaordLayout() {
     setToken("");
     clearUser();
     queryClient.clear();
+  }
+
+  const handleProfileClick = () => {
+    navigate('/profile');
   }
   
   if(token === ''){
@@ -148,6 +153,7 @@ function DashbaordLayout() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => handleProfileClick()}>Profile</DropdownMenuItem>
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />

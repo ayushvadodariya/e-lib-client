@@ -11,5 +11,6 @@ export const ROUTES = {
     BOOKS_CREATE: '/books/create',
     SETTINGS: '/settings',
     READ: '/read',
+    PROFILE: '/profile'
   }
 } as const;

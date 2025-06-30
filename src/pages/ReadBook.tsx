@@ -70,7 +70,7 @@ export default function ReadBook() {
               <h2 className="text-2xl font-bold">{book?.title}</h2>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-start">
               <img
                 src={book?.coverImage || "/placeholder.svg"}
                 alt={`Cover of ${book?.title}`}

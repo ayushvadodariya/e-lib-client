@@ -30,7 +30,7 @@ function BooksPage() {
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   const form = useForm<EditFormDataType>({
-      resolver: zodResolver(editBookFromSchem)
+    resolver: zodResolver(editBookFromSchem)
   });
 
   useEffect(()=>{
@@ -264,10 +264,10 @@ function BooksPage() {
                       <FormItem>
                         <FormLabel>Cover Image</FormLabel>
                         <FormControl>
-
                           <Input 
-                            id="file" 
+                            id="coverImage" 
                             type="file" 
+                            accept="image/jpeg,image/jpg,image/png"
                             {...coverImageRef}
                           />
                         </FormControl>
@@ -286,6 +286,7 @@ function BooksPage() {
                           <Input 
                             id="file" 
                             type="file" 
+                            accept="application/pdf,application/epub+zip"
                             {...fileRef}
                           />
                         </FormControl>
@@ -299,12 +300,8 @@ function BooksPage() {
                       <Button variant="outline">Cancel</Button>
                     </DialogClose>
                     <Button 
-                      type="submit" 
+                      onClick={form.handleSubmit(onEditSubmit)}
                       disabled={editBookMutation.isPending}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        form.handleSubmit(onEditSubmit)();
-                      }}
                     >
                       {editBookMutation.isPending && <LoaderCircle className="animate-spin" />}
                       <span>Save Changes</span>

@@ -38,8 +38,12 @@ function CreateBook() {
     formdata.append('title', values.title);
     formdata.append('genre', values.genre);
     formdata.append('description', values.description);
-    formdata.append('coverImage', values.coverImage[0]);
-    formdata.append('file', values.file[0]);
+    if(values.coverImage && values.coverImage.length>0){
+      formdata.append('coverImage', values.coverImage[0]);
+    }
+    if(values.file && values.file.length>0){
+      formdata.append('file', values.file[0]);
+    }
 
     createBookMutation.mutate(formdata);
   };
@@ -67,7 +71,6 @@ function CreateBook() {
                 <LoaderCircle className="animate-spin" />
               }
               <span>Submit</span>
-              
             </Button>
 
             </div>
@@ -139,10 +142,10 @@ function CreateBook() {
                     <FormItem>
                       <FormLabel>Cover Image</FormLabel>
                       <FormControl>
-
                         <Input 
-                          id="file" 
+                          id="coverImage" 
                           type="file" 
+                          accept="image/jpeg,image/jpg,image/png"
                           {...coverImageRef}
                         />
                       </FormControl>
@@ -158,10 +161,10 @@ function CreateBook() {
                     <FormItem>
                       <FormLabel>File</FormLabel>
                       <FormControl>
-
                         <Input 
                           id="file" 
                           type="file" 
+                          accept="application/pdf,application/epub+zip"
                           {...fileRef}
                         />
                       </FormControl>

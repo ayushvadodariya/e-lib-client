@@ -16,14 +16,15 @@ export function useEditBook({
   editingBook,
   onSuccess: customOnSuccess,
   onError: customOnError,
-  showErrorToast,
-  showSuccessToast
+  showErrorToast = true,
+  showSuccessToast = true
 }: UseEditBookProp) {
 
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: EditFormDataType )=>{
+      console.log("edit book mutation called");
       if (!editingBook) {
         throw new Error("No book selected for editing");
       }

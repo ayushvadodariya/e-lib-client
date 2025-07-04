@@ -12,7 +12,7 @@ export const bookFormSchema = z.object({
         !fileList ||
         fileList.length === 0 ||
         ["image/jpeg", "image/jpg", "image/png"].includes(fileList[0]?.type),
-      { message: "Only images are allowed" }
+        { message: "Only images are allowed" }
     )
     .refine(
       (fileList) =>
@@ -57,3 +57,19 @@ export const editBookFromSchem = bookFormSchema;
 
 export type CreateBookFormType = z.infer<typeof createBookFormSchema>;
 export type EditFormDataType = z.infer<typeof editBookFromSchem>;
+
+export const editUserFormSchema = z.object({
+  name: z.string().min(1, "name must be at least 1 characters.").optional(),
+  bio: z.string().optional(),
+  profilePhoto: z.instanceof(FileList)
+    .optional()
+    .refine(
+      (fileList) => 
+        !fileList || 
+        fileList.length === 0 ||
+        ["image/jpeg", "image/jpg", "image/png"].includes(fileList[0]?.type),
+        { message: "Only images are allowed" }
+    )
+});
+
+export type editUserSchemType = z.infer<typeof editUserFormSchema>;

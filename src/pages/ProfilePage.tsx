@@ -3,15 +3,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useBooks } from "@/hooks/useBooks"
 import { useSyncUser } from "@/hooks/useSyncUser";
 import { useNavigate } from "react-router-dom";
-import { Book, CalendarDays } from 'lucide-react';
+import { Book, CalendarDays, PencilIcon } from 'lucide-react';
 import BookCard from "@/components/book-card";
 import { ROUTES } from "@/config/routes";
 import { format, parseISO } from "date-fns";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useState } from "react";
+import EditProfilDialog from "@/components/edit-profile-dialog";
+import type { User } from "@/types/types";
 
 export default function ProfilePage() {
 
   const navigate = useNavigate();
+
+  const [editingProfile, setEditingProfile] = useState<boolean>(false);
 
   const {
     user,
@@ -27,6 +32,10 @@ export default function ProfilePage() {
 
   const isConnectionError = userError &&
     userError.message?.includes('Network Error');
+
+  const handleEditProfile = () => {
+    setEditingProfile(true);
+  };
 
   if(userError){
     return (
@@ -81,7 +90,17 @@ export default function ProfilePage() {
           </Avatar>
         </div>
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">{user?.name}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">{user?.name}</h1>
+            <Button variant="outline" size="sm" 
+              className="flex items-center gap-1"
+              onClick={handleEditProfile}
+            >
+              <span className="hidden sm:inline">Edit Profile</span>
+              <span className="sm:hidden">Edit</span>
+              <PencilIcon className="h-3.5 w-3.5" />
+            </Button>
+          </div>
           <p className="text-muted-foreground">@{user?.username}</p>
           
           {user?.bio && (
@@ -144,6 +163,11 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+      <EditProfilDialog 
+        user = {user as User}
+        open= {editingProfile} 
+        onOpenChange= {(open: boolean) => !open && setEditingProfile(false)}
+      />
     </div>
   );
 }

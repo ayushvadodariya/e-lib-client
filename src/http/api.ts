@@ -29,6 +29,13 @@ export const login = async (data: {email:string, password:string}) =>
 export const register= async (data: {name:string, email:string, password:string}) => 
   api.post('/api/users/register', data);
 
+export const editUserProfile = async (data: FormData) => 
+  api.patch(`/api/users`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+
 export const getBooks = async () => 
   api.get('/api/books'); 
 

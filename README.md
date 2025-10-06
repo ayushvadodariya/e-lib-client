@@ -2,6 +2,16 @@
 
 A modern React application for a digital library platform with **AI-powered content enhancement** tools for authors.
 
+## 🎯 Demo
+
+**Live Demo**: https://e-lib-client.vercel.app
+
+**Demo Credentials:**
+- Email: `jk.rowling@gmail.com`
+- Password: `Password1!`
+
+*Try the AI features: Create a new book and use "Fix Grammar" or "Improve Description" buttons!*
+
 ## 🚀 Features
 
 ### Core Features

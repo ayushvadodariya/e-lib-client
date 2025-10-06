@@ -24,7 +24,7 @@ export function useDeleteBook(options: useDeleteBookProp ={}) {
     mutationFn: (bookId: string) => {
       return deleteBook(bookId);
     },
-    onSuccess: (data, bookId) => {
+    onSuccess: (_data, bookId) => {
       queryClient.invalidateQueries({ queryKey: ['books']});
 
       if(showSuccessToast){

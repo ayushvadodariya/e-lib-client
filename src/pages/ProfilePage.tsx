@@ -27,7 +27,6 @@ export default function ProfilePage() {
   const {
     books,
     isLoading: booksLoading,
-    error: booksError
   } = useBooks();
 
   const isConnectionError = userError &&

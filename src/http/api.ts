@@ -64,6 +64,3 @@ export const fetchFileAsBlob = async (url: string) =>
 
 export const fixGrammar = async (text: string) => 
   api.post('/api/books/fix-grammar', { text });
-
-export const improveDescription = async (text: string, prompt?: string) => 
-  api.post('/api/books/improve-description', { text, prompt });

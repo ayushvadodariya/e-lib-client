@@ -6,23 +6,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle, Sparkles, CheckCircle } from "lucide-react";
+import { LoaderCircle, CheckCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createBookFormSchema, type CreateBookFormType } from "@/types/forms";
 import { ROUTES } from "@/config/routes";
 import useCreateBook from "@/hooks/useCreateBook";
 import { useFixGrammar } from "@/hooks/useFixGrammar";
-import { useImproveDescription } from "@/hooks/useImproveDescription";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
 
 function CreateBook() {
 
   const navigate = useNavigate();
-  const [improvementPrompt, setImprovementPrompt] = useState("");
-  const [showPromptDialog, setShowPromptDialog] = useState(false);
 
   const form = useForm<CreateBookFormType>({
     resolver: zodResolver(createBookFormSchema) 
@@ -41,7 +35,6 @@ function CreateBook() {
   });
 
   const fixGrammarMutation = useFixGrammar();
-  const improveDescriptionMutation = useImproveDescription();
 
   const handleFixGrammar = async () => {
     const currentDescription = form.getValues('description');
@@ -62,30 +55,6 @@ function CreateBook() {
     }
   };
 
-  const handleImproveDescription = async (customPrompt?: string) => {
-    const currentDescription = form.getValues('description');
-    
-    if (!currentDescription || currentDescription.trim() === '') {
-      toast.error("Please enter a description first");
-      return;
-    }
-
-    try {
-      const result = await improveDescriptionMutation.mutateAsync({ 
-        text: currentDescription, 
-        prompt: customPrompt 
-      }) as { data: { improvedText: string } };
-      
-      const improvedText = result.data.improvedText;
-      form.setValue('description', improvedText);
-      toast.success(customPrompt ? "Description improved with your instructions!" : "Description improved!");
-      setShowPromptDialog(false);
-      setImprovementPrompt("");
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to improve description";
-      toast.error(errorMessage);
-    }
-  };
 
 
   const onSubmit = (values:CreateBookFormType)=>{
@@ -192,62 +161,7 @@ function CreateBook() {
                             Fix Grammar
                           </Button>
                           
-                          <Dialog open={showPromptDialog} onOpenChange={setShowPromptDialog}>
-                            <DialogTrigger asChild>
-                              <Button 
-                                type="button" 
-                                variant="outline" 
-                                size="sm"
-                                disabled={improveDescriptionMutation.isPending}
-                              >
-                                {improveDescriptionMutation.isPending && <LoaderCircle className="animate-spin mr-2 h-4 w-4" />}
-                                <Sparkles className="mr-2 h-4 w-4" />
-                                Improve Description
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[525px]">
-                              <DialogHeader>
-                                <DialogTitle>Improve Description</DialogTitle>
-                                <DialogDescription>
-                                  Optionally provide specific instructions for how you'd like to improve the description (e.g., "make it more exciting", "add more mystery", "make it professional"). Leave blank for general improvement.
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="grid gap-4 py-4">
-                                <div className="grid gap-2">
-                                  <Label htmlFor="improvement-prompt">
-                                    Custom Instructions (Optional)
-                                  </Label>
-                                  <Textarea
-                                    id="improvement-prompt"
-                                    placeholder="e.g., make it more engaging and add suspense..."
-                                    value={improvementPrompt}
-                                    onChange={(e) => setImprovementPrompt(e.target.value)}
-                                    className="min-h-24"
-                                  />
-                                </div>
-                              </div>
-                              <DialogFooter>
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  onClick={() => {
-                                    setShowPromptDialog(false);
-                                    setImprovementPrompt("");
-                                  }}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  type="button"
-                                  onClick={() => handleImproveDescription(improvementPrompt || undefined)}
-                                  disabled={improveDescriptionMutation.isPending}
-                                >
-                                  {improveDescriptionMutation.isPending && <LoaderCircle className="animate-spin mr-2 h-4 w-4" />}
-                                  Improve
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
+                          {/* Improve Description UI removed */}
                         </div>
                       </div>
                       <FormControl>
